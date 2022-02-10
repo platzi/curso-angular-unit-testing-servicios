@@ -1,6 +1,6 @@
 import { ValueService } from './value.service';
 
-fdescribe('ValueService', () => {
+describe('ValueService', () => {
   let service: ValueService;
 
   beforeEach(() => {
@@ -38,6 +38,17 @@ fdescribe('ValueService', () => {
     it('should return "promise value" from promise using async', async () => {
       const rta = await service.getPromiseValue();
       expect(rta).toBe('promise value');
+    });
+  });
+
+  describe('Tests for getObservableValue', () => {
+    it('should return "observable value" from observable', (doneFn) => {
+      service.getObservableValue()
+      .subscribe((value) => {
+        // assert
+        expect(value).toBe('observable value');
+        doneFn();
+      });
     });
   });
 
