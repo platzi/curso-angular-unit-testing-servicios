@@ -3,7 +3,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 
 import { ProductsService } from './product.service';
 import { Product } from '../models/product.model';
-import { generateManyProducts } from '../models/product.mock';
+import { generateManyProducts, generateOneProduct } from '../models/product.mock';
 import { environment } from './../../environments/environment';
 
 fdescribe('ProductsService', () => {
@@ -35,6 +35,55 @@ fdescribe('ProductsService', () => {
         //Assert
         expect(data.length).toEqual(mockData.length);
         expect(data).toEqual(mockData);
+        doneFn();
+      });
+
+      // http config
+      const url = `${environment.API_URL}/api/v1/products`;
+      const req = httpController.expectOne(url);
+      req.flush(mockData);
+      httpController.verify();
+    });
+  });
+
+  describe('tests for getAll', () => {
+    it('should return a product list', (doneFn) => {
+      //Arrange
+      const mockData: Product[] = generateManyProducts(3);
+      //Act
+      productService.getAll()
+      .subscribe((data)=> {
+        //Assert
+        expect(data.length).toEqual(mockData.length);
+        doneFn();
+      });
+
+      // http config
+      const url = `${environment.API_URL}/api/v1/products`;
+      const req = httpController.expectOne(url);
+      req.flush(mockData);
+      httpController.verify();
+    });
+
+    it('should return product list with taxes', (doneFn) => {
+      // Arrange
+      const mockData: Product[] = [
+        {
+          ...generateOneProduct(),
+          price: 100, // 100 * .19 = 19
+        },
+        {
+          ...generateOneProduct(),
+          price: 200, // 200 * .19 = 38
+        }
+      ];
+      //Act
+      productService.getAll()
+      .subscribe((data)=> {
+        //Assert
+        expect(data.length).toEqual(mockData.length);
+        expect(data[0].taxes).toEqual(19);
+        expect(data[1].taxes).toEqual(38);
         doneFn();
       });
 
