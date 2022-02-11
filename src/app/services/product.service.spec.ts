@@ -3,6 +3,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 
 import { ProductsService } from './product.service';
 import { Product } from '../models/product.model';
+import { generateManyProducts } from '../models/product.mock';
 import { environment } from './../../environments/environment';
 
 fdescribe('ProductsService', () => {
@@ -27,19 +28,7 @@ fdescribe('ProductsService', () => {
   describe('tests for getAllSimple', () => {
     it('should return a product list', (doneFn) => {
       //Arrange
-      const mockData: Product[] = [
-        {
-          id: '123',
-          title: 'title',
-          price: 12,
-          description: 'blabla',
-          category: {
-            id: 112,
-            name: 'as'
-          },
-          images: ['img','img']
-        }
-      ];
+      const mockData: Product[] = generateManyProducts(2);
       //Act
       productService.getAllSimple()
       .subscribe((data)=> {
