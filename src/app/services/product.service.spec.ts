@@ -5,6 +5,7 @@ import { ProductsService } from './product.service';
 import { Product, CreateProductDTO, UpdateProductDTO } from '../models/product.model';
 import { generateManyProducts, generateOneProduct } from '../models/product.mock';
 import { environment } from './../../environments/environment';
+import { HttpStatusCode } from '@angular/common/http';
 
 fdescribe('ProductsService', () => {
   let productService: ProductsService;
@@ -201,6 +202,58 @@ fdescribe('ProductsService', () => {
       const req = httpController.expectOne(url);
       expect(req.request.method).toEqual('DELETE');
       req.flush(mockData);
+    });
+  });
+
+  describe('test for getOne', () => {
+    it('should return a product', (doneFn) => {
+      // Arrange
+      const mockData: Product = generateOneProduct();
+      const productId = '1';
+      // Act
+      productService.getOne(productId)
+      .subscribe((data) => {
+        // Assert
+        expect(data).toEqual(mockData);
+        doneFn();
+      });
+
+      // http config
+      const url = `${environment.API_URL}/api/v1/products/${productId}`;
+      const req = httpController.expectOne(url);
+      expect(req.request.method).toEqual('GET');
+      req.flush(mockData);
+    });
+
+    it('should return the right msg when the status code is 404', (doneFn) => {
+      // Arrange
+      const productId = '1';
+      const msgError = '404 message';
+      const mockError = {
+        status: HttpStatusCode.NotFound,
+        statusText: msgError
+      };
+      // Act
+      productService.getOne(productId)
+      .subscribe({
+        error: (error) => {
+          // assert
+          expect(error).toEqual('El producto no existe');
+          doneFn();
+        }
+      });
+
+      // productService.getOne(productId)
+      // .subscribe(null, (error) => {
+      //   expect(error).toEqual('El producto no existe');
+      //   doneFn();
+      // });
+
+      // http config
+      const url = `${environment.API_URL}/api/v1/products/${productId}`;
+      const req = httpController.expectOne(url);
+      expect(req.request.method).toEqual('GET');
+      req.flush(msgError, mockError);
     });
   });
 
