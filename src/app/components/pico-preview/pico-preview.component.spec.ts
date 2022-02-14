@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PicoPreviewComponent } from './pico-preview.component';
 
-describe('PicoPreviewComponent', () => {
+xdescribe('PicoPreviewComponent', () => {
   let component: PicoPreviewComponent;
   let fixture: ComponentFixture<PicoPreviewComponent>;
 
